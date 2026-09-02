@@ -1,0 +1,5 @@
+main: 
+    sum 1, 2
+
+sum x, y:
+    x + y

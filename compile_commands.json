@@ -1,0 +1,23 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c11",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "-x c",
+      "build/atlas.o",
+      "src/atlas.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/atlas.c",
+    "output": "/home/lucasryall/projects/atlas/build/atlas.o"
+  }
+]
