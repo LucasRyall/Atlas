@@ -37,6 +37,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                 break;
             case '/':
                 if (line[loc + 1] == '/') {
+                    // this is a comment, will do to the end of line
                     return token;
                 } else {
                     token->token = DIVIDE;
@@ -46,10 +47,19 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                 if (line[loc + 1] == '^') {
                     token->token = POWER;
                     loc++;
+                } else {
+                    skip = 1;
+                    fprintf(stderr, "Bitwise operations not supported yet");
                 }
                 break;
             case ':': 
                 token->token = COLON;
+                break;
+            case ';': 
+                token->token = SEMICOLON;
+                break;
+            case '|': 
+                token->token = PIPE;
                 break;
             case ',': 
                 token->token = COMMA;
@@ -72,6 +82,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                     // +1 for null terminator
                     char* value = calloc(match.rm_eo + 1, sizeof(char));
                     snprintf(value, match.rm_eo+1, "%s", line+loc);
+                    // -1 to accout for adding one again later
                     loc += match.rm_eo - 1;
                     token->value = value;
                     token->token = NUMBER;
@@ -85,7 +96,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
             case 'a' ... 'z': case 'A' ... 'Z': case '_': {
                     regex_t reg;
                     regmatch_t match;
-                    int rege = regcomp(&reg, "^[a-zA-Z]+[a-zA-Z0-9]*", REG_EXTENDED);
+                    int rege = regcomp(&reg, "[a-zA-Z][a-zA-Z0-9]*", REG_EXTENDED);
                     if (rege) {
                         fprintf(stderr, "Couldn't compile itdentifer regex.\n");
                         fprintf(stderr, "%s\n",line);
@@ -100,6 +111,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                     // +1 for null terminator
                     char* value = calloc(match.rm_eo + 1, sizeof(char));
                     snprintf(value, match.rm_eo+1, "%s", line+loc);
+                    // -1 to accout for adding one again later
                     loc += match.rm_eo - 1;
                     token->value = value;
                     token->token = IDENTIFIER;

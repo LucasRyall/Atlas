@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 
-
 typedef enum {
     UNKNOWN,
     IDENTIFIER,
@@ -22,7 +21,8 @@ typedef enum {
     NOTEQUALS,  //!=
     //other symbols
     COLON,
-    ASSIGNMENT, //:= idk if this is even needed
+    SEMICOLON,
+    PIPE,       //|
     COMMA,
     PERIOD,
     EOF_TOKEN,
