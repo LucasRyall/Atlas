@@ -8,6 +8,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * global TokenView so entire program can know where we are up to
+ * token gets set at the start of the lexer.
+ */
+TokenView token_view = {
+    .token = NULL,
+    .next_token = next_token,
+};
+
 
 /**
  * line:        current line we are working on
@@ -96,7 +105,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
             case 'a' ... 'z': case 'A' ... 'Z': case '_': {
                     regex_t reg;
                     regmatch_t match;
-                    int rege = regcomp(&reg, "[a-zA-Z][a-zA-Z0-9]*", REG_EXTENDED);
+                    int rege = regcomp(&reg, "[a-zA-Z][a-zA-Z0-9_]*", REG_EXTENDED);
                     if (rege) {
                         fprintf(stderr, "Couldn't compile itdentifer regex.\n");
                         fprintf(stderr, "%s\n",line);
@@ -119,7 +128,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                     break;
                 }
             default: 
-                fprintf(stderr, "Bad symbol: %d\n", line[loc]); 
+                fprintf(stderr, "Bad symbol: %d, %c\n", line[loc], line[loc]); 
                 fprintf(stderr, "%zu, %zu\n", location.line, location.column);
                 skip = 1;
                 break;
@@ -139,7 +148,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
 /**
  *  takes input file and outputs an array of tokens
  */
-Token* lexer(char* filename) {
+void lexer(char* filename) {
     FILE* file = fopen(filename, "r");
 
     if (file == NULL) {
@@ -148,7 +157,8 @@ Token* lexer(char* filename) {
     }
     
     Token* token = malloc(sizeof(Token));
-    Token* first_token = token;
+    token_view.token = token;
+    //Token* first_token = token;
     char* line = NULL;
     size_t line_length = 0;
     size_t line_n = 0;
@@ -166,5 +176,4 @@ Token* lexer(char* filename) {
     //    free(line_length);
     //}
     fclose(file);
-    return first_token;
 }

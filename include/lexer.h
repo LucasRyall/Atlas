@@ -1,8 +1,6 @@
 #ifndef LEXER
 #define LEXER
 
-#include "token.h"
-
-Token* lexer(char* filename);
+void lexer(char* filename);
 
 #endif

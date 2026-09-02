@@ -40,6 +40,13 @@ typedef struct Token {
     Location loc;
 } Token;
 
-Token* next_token (Token token);
+typedef struct TokenView {
+    Token* token;
+    int (*next_token)(void);
+} TokenView;
+
+extern TokenView token_view;
+
+int next_token(void);
 
 #endif

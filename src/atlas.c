@@ -9,45 +9,15 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    Token* token = lexer(argv[1]);
-    if (token->token == 0) {
+    lexer(argv[1]);
+    if (token_view.token->token == UNKNOWN) {
         fprintf(stderr, "Lexer Failed to make tokens");
         exit(1);
     }
-    int end = 0;
-    while (!end) {
-        switch (token->token) {
-            case IDENTIFIER: case NUMBER:
-                printf("%s", token->value);
-                break;
-            case PLUS:
-                printf("+");
-                break;
-            case MINUS:
-                printf("-");
-                break;
-            case MULTIPLY:
-                printf("*");
-                break;
-            case DIVIDE:
-                printf("/");
-                break;
-            case POWER:
-                printf("^^");
-                break;
-            case COLON:
-                printf(":");
-                break;
-            case COMMA:
-                printf(",");
-                break;
-            case EOF_TOKEN:
-                end = 1;
-                break;
-            default:
-                printf("_");
-        }
-        token = token->next;
-    }
+    do {
+        if(token_view.token->value != NULL) {
+            printf("%s\n", token_view.token->value);
+        }  
+    } while(token_view.next_token());
     printf("\n");
 }

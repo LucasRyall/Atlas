@@ -1,5 +1,10 @@
 #include "token.h"
 
-Token* next_token (Token token) {
-    return token.next;
+
+int next_token(void) {
+    if(token_view.token->next == NULL) {
+        return 0;
+    }
+    token_view.token = token_view.token->next;
+    return 1;
 }
