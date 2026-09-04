@@ -8,15 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * global TokenView so entire program can know where we are up to
- * token gets set at the start of the lexer.
- */
-TokenView token_view = {
-    .token = NULL,
-    .next_token = next_token,
-};
-
 
 /**
  * line:        current line we are working on
@@ -27,10 +18,9 @@ TokenView token_view = {
 Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
     size_t loc = 0;
     while (loc < line_l) {
-        Location location = {
-            line_n,
-            loc,
-        };
+        Location* location = malloc(sizeof(Location));
+        location->line = line_n;
+        location->column = loc;
         token->loc = location;
         char curr = line[loc];
         int skip = 0;
@@ -129,7 +119,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                 }
             default: 
                 fprintf(stderr, "Bad symbol: %d, %c\n", line[loc], line[loc]); 
-                fprintf(stderr, "%zu, %zu\n", location.line, location.column);
+                fprintf(stderr, "%zu, %zu\n", location->line, location->column);
                 skip = 1;
                 break;
             
@@ -137,6 +127,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
         loc++;
         if (!skip) {
             Token* new_token = malloc(sizeof(Token));
+            new_token->value = NULL;
             token->next = new_token;
             token = new_token;
         }
@@ -157,8 +148,8 @@ void lexer(char* filename) {
     }
     
     Token* token = malloc(sizeof(Token));
+    token->value = NULL;
     token_view.token = token;
-    //Token* first_token = token;
     char* line = NULL;
     size_t line_length = 0;
     size_t line_n = 0;
@@ -172,8 +163,5 @@ void lexer(char* filename) {
     if (line != NULL) {
         free(line);
     }
-    //if (line_length != NULL) {
-    //    free(line_length);
-    //}
     fclose(file);
 }

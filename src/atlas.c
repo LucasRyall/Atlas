@@ -15,9 +15,12 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
     do {
-        if(token_view.token->value != NULL) {
+        if(token_view.token->token == IDENTIFIER || token_view.token->token == NUMBER) {
             printf("%s\n", token_view.token->value);
         }  
+        if (token_view.token->token == EOF_TOKEN) {
+            printf("EOF");
+        }
     } while(token_view.next_token());
     printf("\n");
 }

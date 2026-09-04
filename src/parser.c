@@ -2,16 +2,19 @@
 #include "ast.h"
 #include "token.h"
 
-//void parse_identifier()
-//
-//void parse_block(Token* token) {
-//    parse_identifer(token);
-//}
+void parse_identifier(void) {
+
+}
+
+void parse_block(void) {
+    parse_identifier();
+}
 
 
-Tree* parser(Token* token) {
+Tree* parser(void) {
     // do anything else
-    //parse_block(token);
+    //TODO setup symbol table
+    parse_block();
 }
 
 
