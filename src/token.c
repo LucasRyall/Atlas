@@ -1,8 +1,9 @@
 #include "token.h"
 #include <stdlib.h>
+#include <string.h>
 
 
-void free_token(Token* token) {
+static inline void free_token(Token* token) {
     if (token == NULL) {
         return;
     }
@@ -15,7 +16,7 @@ void free_token(Token* token) {
     free(token);
 }
 
-int next_token(void) {
+static inline int next_token(void) {
     //might not be the safest thing ever. might want to change this in the future
     if(token_view.token->next == NULL) {
         return 0;
@@ -27,15 +28,21 @@ int next_token(void) {
 }
 
 
-TokenType peek(void) {
-    return token_view.token->token;
+static inline TokenType peek(void) {
+    return token_view.token->token_type;
 }
 
-void match(TokenType tt) {
-    
+static inline int is_match_kw(char* expected) {
+    if (token_view.token->token_type != IDENTIFIER) {
+        return 0;
+    }
+    if (strcmp(token_view.token->value, expected)) {
+        return 0;
+    } 
+    return 1;
 }
 
-int has_next(void) {
+static inline int has_next(void) {
     return token_view.token->next != NULL;
 }
 
@@ -48,4 +55,5 @@ TokenView token_view = {
     .next_token = next_token,
     .peek = peek,
     .has_next = has_next,
+    .is_match_kw = is_match_kw,
 };

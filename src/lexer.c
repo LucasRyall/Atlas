@@ -8,6 +8,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int handle_long_symbol(Token* token, char* regex, char* line, int loc) {
+    regex_t reg;
+    regmatch_t match;
+    int rege = regcomp(&reg, regex, REG_EXTENDED);
+    if (rege) {
+        fprintf(stderr, "Couldn't compile regex.\n");
+        fprintf(stderr, "%s\n",line);
+        exit(rege);
+    }
+    rege = regexec(&reg, line+loc, 1, &match, 0);
+    if (rege) {
+        fprintf(stderr, "Failed regex on number.\n");
+        fprintf(stderr, "%s\n",line);
+        //probably dont want to exit on this? maybe we do idk
+    }
+    regfree(&reg);
+    // +1 for null terminator
+    char* value = calloc(match.rm_eo + 1, sizeof(char));
+    snprintf(value, match.rm_eo+1, "%s", line+loc);
+    // -1 to accout for adding one again later
+    token->value = value;
+    return loc + match.rm_eo - 1;
+}
 
 /**
  * line:        current line we are working on
@@ -26,25 +49,29 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
         int skip = 0;
         switch (curr) {
             case '+': 
-                token->token = PLUS;
+                token->token_type = PLUS;
                 break;
             case '-':
-                token->token = MINUS;
+                if (line[loc + 1] == '>') {
+                    token->token_type = ARROW;
+                } else {
+                    token->token_type = MINUS;
+                }
                 break;
             case '*': 
-                token->token = MULTIPLY;
+                token->token_type = MULTIPLY;
                 break;
             case '/':
                 if (line[loc + 1] == '/') {
                     // this is a comment, will do to the end of line
                     return token;
                 } else {
-                    token->token = DIVIDE;
+                    token->token_type = DIVIDE;
                 }
                 break;
             case '^':
                 if (line[loc + 1] == '^') {
-                    token->token = POWER;
+                    token->token_type = POWER;
                     loc++;
                 } else {
                     skip = 1;
@@ -52,40 +79,20 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                 }
                 break;
             case ':': 
-                token->token = COLON;
+                token->token_type = COLON;
                 break;
             case ';': 
-                token->token = SEMICOLON;
+                token->token_type = SEMICOLON;
                 break;
             case '|': 
-                token->token = PIPE;
+                token->token_type = PIPE;
                 break;
             case ',': 
-                token->token = COMMA;
+                token->token_type = COMMA;
                 break;
             case '0' ... '9': {
-                    regex_t reg;
-                    regmatch_t match;
-                    int rege = regcomp(&reg, "^[0-9]+\\.[0-9]+|^[0-9]+", REG_EXTENDED);
-                    if (rege) {
-                        fprintf(stderr, "Couldn't compile number regex.\n");
-                        fprintf(stderr, "%s\n",line);
-                        exit(rege);
-                    }
-                    rege = regexec(&reg, line+loc, 1, &match, 0);
-                    if (rege) {
-                        fprintf(stderr, "Failed regex on number.\n");
-                        fprintf(stderr, "%s\n",line);
-                        //probably dont want to exit on this? maybe we do idk
-                    }
-                    // +1 for null terminator
-                    char* value = calloc(match.rm_eo + 1, sizeof(char));
-                    snprintf(value, match.rm_eo+1, "%s", line+loc);
-                    // -1 to accout for adding one again later
-                    loc += match.rm_eo - 1;
-                    token->value = value;
-                    token->token = NUMBER;
-                    regfree(&reg);
+                    loc = handle_long_symbol(token, "^[0-9]+\\.[0-9]+|^[0-9]+", line, loc);
+                    token->token_type = NUMBER;
                     break;
                 }
             case ' ': case '\t': case '\n': case '\r': case '\v': case '\f': 
@@ -93,33 +100,42 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                 skip = 1;
                 break;
             case 'a' ... 'z': case 'A' ... 'Z': case '_': {
-                    regex_t reg;
-                    regmatch_t match;
-                    int rege = regcomp(&reg, "[a-zA-Z][a-zA-Z0-9_]*", REG_EXTENDED);
-                    if (rege) {
-                        fprintf(stderr, "Couldn't compile itdentifer regex.\n");
-                        fprintf(stderr, "%s\n",line);
-                        exit(rege);
+                    loc = handle_long_symbol(token, "[a-zA-Z_][a-zA-Z0-9_]*", line, loc);
+                    // not really a better way sadly
+                    if (!strcmp(token->value, "fn")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = FUNCTION;
+                    } else if (!strcmp(token->value, "if")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = IF;
+                    } else if (!strcmp(token->value, "then")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = THEN;
+                    } else if (!strcmp(token->value, "else")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = ELSE;
+                    } else if (!strcmp(token->value, "const")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = CONST;
+                    } else if (!strcmp(token->value, "include")) {
+                        free(token->value);
+                        token->value = NULL;
+                        token->token_type = INCLUDE;
+                    } else {
+                        token->token_type = IDENTIFIER;
                     }
-                    rege = regexec(&reg, line+loc, 1, &match, 0);
-                    if (rege) {
-                        fprintf(stderr, "Failed regex on identifier.\n");
-                        fprintf(stderr, "%s\n",line);
-                        //probably dont want to exit on this? maybe we do idk
-                    }
-                    // +1 for null terminator
-                    char* value = calloc(match.rm_eo + 1, sizeof(char));
-                    snprintf(value, match.rm_eo+1, "%s", line+loc);
-                    // -1 to accout for adding one again later
-                    loc += match.rm_eo - 1;
-                    token->value = value;
-                    token->token = IDENTIFIER;
-                    regfree(&reg);
                     break;
                 }
             default: 
-                fprintf(stderr, "Bad symbol: %d, %c\n", line[loc], line[loc]); 
-                fprintf(stderr, "%zu, %zu\n", location->line, location->column);
+                fprintf(stderr, "Unknown symbol: %d, %c\n", line[loc], line[loc]); 
+                fprintf(stderr, "Location: %zu, %zu\n", location->line, location->column);
+                fprintf(stderr, "If this is where an identifier is supposed to be, identifers can only start with alpha charaters or '_', and files are expected to be UTF-8 encoded.\n");
+                fprintf(stderr, "Unkown symbol has been skipped and compiler will attempt to continue.\n");
                 skip = 1;
                 break;
             
@@ -158,7 +174,7 @@ void lexer(char* filename) {
         line_n++;
     }
     //this one should always be the eof token.. maybe
-    token->token = EOF_TOKEN;
+    token->token_type = EOF_TOKEN;
 
     if (line != NULL) {
         free(line);

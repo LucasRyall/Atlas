@@ -12,16 +12,27 @@
     X(UNKNOWN, 0) \
     X(IDENTIFIER, EXPR_START_SET) \
     X(NUMBER, EXPR_START_SET) \
+    /* math operators*/ \
     X(PLUS, BINARY_OP) \
     X(MINUS, UNARY_OP | BINARY_OP) \
     X(MULTIPLY, BINARY_OP) \
     X(DIVIDE, BINARY_OP) \
     X(POWER, BINARY_OP) \
+    /* relational operators */ \
     X(OR, RELATIONAL_OP) \
     X(AND, RELATIONAL_OP) \
     X(NOT, RELATIONAL_OP) \
     X(EQUALS, RELATIONAL_OP) \
-    X(NOTEQUALS, RELATIONAL_OP) \
+    X(NOT_EQUALS, RELATIONAL_OP) \
+    /* keywords */ \
+    X(FUNCTION, 0) \
+    X(IF, 0) \
+    X(THEN, 0) \
+    X(ELSE, 0) \
+    X(CONST, 0) \
+    X(INCLUDE, 0) \
+    /* other symbols */ \
+    X(ARROW, 0) \
     X(COLON, 0) \
     X(SEMICOLON, 0) \
     X(PIPE, 0) \
@@ -63,6 +74,10 @@ typedef enum { TOKEN_TYPES } TokenType;
 static const int token_sets[] = { TOKEN_TYPES };
 #undef X
 
+#define X(name, sets) #name,
+static const char* token_strings[] = { TOKEN_TYPES };
+#undef X
+
 typedef struct Location {
     size_t line;
     size_t column;
@@ -70,7 +85,7 @@ typedef struct Location {
 
 typedef struct Token {
     char* value; //probably only used for identifers
-    TokenType token;
+    TokenType token_type;
     struct Token* next;
     Location* loc;
 } Token;
@@ -80,6 +95,7 @@ typedef struct TokenView {
     int (*next_token)(void);
     TokenType (*peek)(void);
     int (*has_next)(void);
+    int (*is_match_kw)(char*);
 } TokenView;
 
 extern TokenView token_view;
