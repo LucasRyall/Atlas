@@ -15,7 +15,7 @@ Because so far very little forethought has been put into any features.
 Idk, read above.
 
 # AI
-Strictly no AI written code. (I ethically steal from forums)
+No AI written code (expect the makefile).
 
 # Doesn't work on my system
 If it doesn't work elsewhere feel free to make a PR/ submit an issue.

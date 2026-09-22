@@ -6,7 +6,7 @@ INC_DIR := include
 BUILD_DIR := build
 BIN_DIR := bin
 
-CFLAGS := -std=c18 -Wall -Wextra -Wpedantic -I$(INC_DIR)
+CFLAGS := -std=c2y -Wall -Wextra -Wpedantic -I$(INC_DIR)
 LDFLAGS :=
 
 # Debug/Release toggle: `make MODE=release`
