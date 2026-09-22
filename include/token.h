@@ -41,31 +41,6 @@
     X(EOF_TOKEN, 0)
 #include <stddef.h>
 
-//typedef enum TokenType {
-//    UNKNOWN,
-//    IDENTIFIER,
-//    NUMBER,
-//    //math operators
-//    PLUS,       //+
-//    MINUS,      //-
-//    MULTIPLY,   //*
-//    DIVIDE,     ///
-//    POWER,      //^^
-//    //logical operators
-//    OR,         //||
-//    AND,        //&&
-//    NOT,        //!!
-//    EQUALS,     //==
-//    NOTEQUALS,  //!=
-//    //other symbols
-//    COLON,
-//    SEMICOLON,
-//    PIPE,       //|
-//    COMMA,
-//    PERIOD,
-//    EOF_TOKEN,
-//} TokenType;
-//
 #define X(name, sets) name,
 typedef enum { TOKEN_TYPES } TokenType;
 #undef X
@@ -84,24 +59,20 @@ typedef struct Location {
 } Location;
 
 typedef struct Token {
-    char* value; //probably only used for identifers
+    char* value; 
     TokenType token_type;
     struct Token* next;
     Location* loc;
 } Token;
 
-typedef struct TokenView {
+struct TokenView {
     Token* token;
     int (*next_token)(void);
     TokenType (*peek)(void);
     int (*has_next)(void);
-    int (*is_match_kw)(char*);
-} TokenView;
+    int (*is_match)(TokenType tt);
+};
 
-extern TokenView token_view;
-
-//int next_token(void);
-//TokenType peek(void);
-//int has_next(void);
+extern struct TokenView token_view;
 
 #endif

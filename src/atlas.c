@@ -1,6 +1,7 @@
 #include "lexer.h"
 #include "token.h"
 #include "parser.h"
+#include "error.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,8 +12,10 @@ void temp_print_tokens(void) {
         } else {
             printf("%s\n", token_strings[token_view.token->token_type]);
         }
+        if (token_view.is_match(EOF_TOKEN)){
+            break;
+        }
     } while(token_view.next_token());
-    printf("\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -21,13 +24,27 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    lexer(argv[1]);
+    FILE* file = fopen(argv[1], "r");
+
+    if (file == NULL) {
+        perror("Couldn't open file");
+        exit(1);
+    }
+    
+    int line_count = get_line_count(file);
+    error.lines = calloc(line_count, sizeof(char*));
+    error.line_count = line_count;
+
+    lexer(file);
+
+    fclose(file);
+
     if (token_view.token->token_type == UNKNOWN) {
         fprintf(stderr, "Lexer Failed to make tokens");
         exit(1);
     }
-    temp_print_tokens();
-    //for(int i = 0; i < EOF_TOKEN; i++) {
-    //    printf("%s\n", token_strings[i]);
-    //}
+
+    parser();
+
+    return 0;
 }

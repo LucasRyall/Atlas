@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 
+#include "error.h"
 #include <regex.h>
 #include <string.h>
 #include "lexer.h"
@@ -27,8 +28,8 @@ int handle_long_symbol(Token* token, char* regex, char* line, int loc) {
     // +1 for null terminator
     char* value = calloc(match.rm_eo + 1, sizeof(char));
     snprintf(value, match.rm_eo+1, "%s", line+loc);
-    // -1 to accout for adding one again later
     token->value = value;
+    // -1 to accout for adding one again later
     return loc + match.rm_eo - 1;
 }
 
@@ -132,10 +133,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
                     break;
                 }
             default: 
-                fprintf(stderr, "Unknown symbol: %d, %c\n", line[loc], line[loc]); 
-                fprintf(stderr, "Location: %zu, %zu\n", location->line, location->column);
-                fprintf(stderr, "If this is where an identifier is supposed to be, identifers can only start with alpha charaters or '_', and files are expected to be UTF-8 encoded.\n");
-                fprintf(stderr, "Unkown symbol has been skipped and compiler will attempt to continue.\n");
+                lexer_error(location, "Unknown Symbol", curr);
                 skip = 1;
                 break;
             
@@ -155,14 +153,7 @@ Token* match_token(char* line, size_t line_l, size_t line_n, Token* token) {
 /**
  *  takes input file and outputs an array of tokens
  */
-void lexer(char* filename) {
-    FILE* file = fopen(filename, "r");
-
-    if (file == NULL) {
-        perror("Couldn't open file");
-        exit(1);
-    }
-    
+void lexer(FILE* file) {
     Token* token = malloc(sizeof(Token));
     token->value = NULL;
     token_view.token = token;
@@ -170,14 +161,13 @@ void lexer(char* filename) {
     size_t line_length = 0;
     size_t line_n = 0;
     while(getline(&line, &line_length, file) >= 0) {
+        char* line_cpy = calloc(line_length, sizeof(char));
+        strcpy(line_cpy, line);
+        error.lines[line_n] = line_cpy;
         token = match_token(line, strlen(line), line_n, token);
         line_n++;
     }
     //this one should always be the eof token.. maybe
     token->token_type = EOF_TOKEN;
 
-    if (line != NULL) {
-        free(line);
-    }
-    fclose(file);
 }

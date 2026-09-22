@@ -1,6 +1,9 @@
 #ifndef LEXER
 #define LEXER
 
-void lexer(char* filename);
+#include <stdio.h>
+
+
+void lexer(FILE* file);
 
 #endif
