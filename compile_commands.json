@@ -2,7 +2,7 @@
   {
     "arguments": [
       "/usr/bin/clang",
-      "-std=c11",
+      "-std=c2y",
       "-Wall",
       "-Wextra",
       "-Wpedantic",
@@ -12,12 +12,151 @@
       "-DDEBUG",
       "-c",
       "-o",
-      "-x c",
       "build/atlas.o",
       "src/atlas.c"
     ],
     "directory": "/home/lucasryall/projects/atlas",
     "file": "/home/lucasryall/projects/atlas/src/atlas.c",
     "output": "/home/lucasryall/projects/atlas/build/atlas.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/error.o",
+      "src/error.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/error.c",
+    "output": "/home/lucasryall/projects/atlas/build/error.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/lexer.o",
+      "src/lexer.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/lexer.c",
+    "output": "/home/lucasryall/projects/atlas/build/lexer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/node.o",
+      "src/node.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/node.c",
+    "output": "/home/lucasryall/projects/atlas/build/node.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/parser.o",
+      "src/parser.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/parser.c",
+    "output": "/home/lucasryall/projects/atlas/build/parser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/symbol.o",
+      "src/symbol.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/symbol.c",
+    "output": "/home/lucasryall/projects/atlas/build/symbol.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/token.o",
+      "src/token.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/token.c",
+    "output": "/home/lucasryall/projects/atlas/build/token.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-std=c2y",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Iinclude",
+      "-g",
+      "-O0",
+      "-DDEBUG",
+      "-c",
+      "-o",
+      "build/util/dynamic_array.o",
+      "src/util/dynamic_array.c"
+    ],
+    "directory": "/home/lucasryall/projects/atlas",
+    "file": "/home/lucasryall/projects/atlas/src/util/dynamic_array.c",
+    "output": "/home/lucasryall/projects/atlas/build/util/dynamic_array.o"
   }
 ]
