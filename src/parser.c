@@ -26,9 +26,12 @@ void parse_function(void) {
 
     if (token_view.is_match(COLON)) {
         token_view.next_token();
+        //TODO other options
         parse_statement();
+
     } else if (token_view.is_match(IDENTIFIER)) {
         parse_identifier();
+
     } else {
         syntax_error(IDENTIFIER);
     }

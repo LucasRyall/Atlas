@@ -17,7 +17,10 @@ else
 	CFLAGS += -g -O0 -DDEBUG
 endif
 
-SRCS := $(wildcard $(SRC_DIR)/*.c)
+# Recursive wildcard: finds files matching $2 under $1, including subdirs
+rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+SRCS := $(call rwildcard,$(SRC_DIR)/,*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
@@ -29,6 +32,7 @@ $(BIN_DIR)/$(TARGET): $(OBJS) | $(BIN_DIR)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
 $(BUILD_DIR):
