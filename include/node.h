@@ -2,6 +2,7 @@
 #define NODE
 
 #include "token.h"
+#include "util/dynamic_array.h"
 
 
 typedef struct Node {
@@ -9,23 +10,23 @@ typedef struct Node {
     
 } Node;
 
-typedef struct Identifer_Node {
+typedef struct IdentiferNode {
     Node* node;
     char* name;
     //Type type;
-} Identifer_Node;
+} IdentiferNode;
 
-typedef struct Statement_Node {
+typedef struct StatementNode {
     Node* node;
 
-} Statement_Node;
+} StatementNode;
 
-typedef struct Function_Node {
+typedef struct FunctionNode {
     Node* node;
-    Identifer_Node** arguments;
+    //Identifer_Nodes, maybe?
+    DynamicArray* arguments;
 
-} Function_Node;
-
+} FunctionNode;
 
 
 #endif

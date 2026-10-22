@@ -67,6 +67,7 @@ int add_identifer(Scope* scope, Token* token) {
         if (!strcmp(map->values[i]->name, token->value)) {
             //duplicate value
             //TODO not sure if we want to anything here?
+            //
             return 1;
         }
         while(map->values[i]) {
